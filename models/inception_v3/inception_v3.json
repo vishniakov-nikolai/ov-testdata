@@ -1,0 +1,79 @@
+{
+    "model": {
+        "model_name": "inception_v3",
+        "model": "out_dir/tf/FP32/inception_v3/inception_v3.xml",
+        "weights": "out_dir/tf/FP32/inception_v3/inception_v3.bin"
+    },
+    "engine": {
+        "name": "inception_v3",
+        "launchers": [
+            {
+                "framework": "dlsdk",
+                "device": "cpu",
+                "adapter": "classification"
+            }
+        ],
+        "datasets": [
+            {
+                "name": "ImageNet2012_bkgr",
+                "data_source": "datasets/ImageNet/original",
+                "annotation": "datasets/ImageNet/accuracy_checker_annotations/2012_1001classes/full/imagenet.pickle",
+                "dataset_meta": "datasets/ImageNet/accuracy_checker_annotations/2012_1001classes/full/imagenet.json",
+                "annotation_conversion": {
+                    "converter": "imagenet",
+                    "annotation_file": "datasets/ImageNet/original/ILSVRC2012_val.txt",
+                    "labels_file": "datasets/ImageNet/original/synset_words.txt",
+                    "has_background": true
+                },
+                "metrics": [
+                    {
+                        "name": "accuracy @ top1",
+                        "type": "accuracy",
+                        "top_k": 1
+                    },
+                    {
+                        "name": "accuracy @ top5",
+                        "type": "accuracy",
+                        "top_k": 5
+                    }
+                ],
+                "preprocessing": [
+                    {
+                        "type": "resize",
+                        "size": 320
+                    },
+                    {
+                        "type": "crop",
+                        "size": 299
+                    }
+                ]
+            }
+        ]
+    },
+    "compression": {
+        "target_device": "CPU",
+        "algorithms": [
+            {
+                "name": "AccuracyAwareQuantization",
+                "params": {
+                    "preset": "performance",
+                    "stat_subset_size": 300,
+                    "metric_subset_ratio": 0.2,
+                    "max_iter_num": 20,
+                    "maximal_drop": 0.01,
+                    "drop_type": "relative",
+                    "metrics": [
+                        {
+                            "name": "accuracy @ top1",
+                            "baseline_value": 0.7749
+                        },
+                        {
+                            "name": "accuracy @ top5",
+                            "baseline_value": 0.9368
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

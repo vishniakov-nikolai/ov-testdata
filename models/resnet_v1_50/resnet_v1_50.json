@@ -1,0 +1,80 @@
+{
+    "model": {
+        "model_name": "resnet_v1_50",
+        "model": "/home/lab_ddpqa/build-private/tmp/out_dir/tf/FP32/resnet_v1_50/resnet_v1_50.xml",
+        "weights": "/home/lab_ddpqa/build-private/tmp/out_dir/tf/FP32/resnet_v1_50/resnet_v1_50.bin"
+    },
+    "engine": {
+        "name": "resnet_v1_50",
+        "launchers": [
+            {
+                "framework": "dlsdk",
+                "device": "cpu",
+                "adapter": "classification"
+            }
+        ],
+        "datasets": [
+            {
+                "name": "ImageNet2012",
+                "data_source": "/nfs/inn/proj/vdp/vdp_datasets/datasets/ImageNet/original",
+                "annotation": "/nfs/inn/proj/vdp/vdp_datasets/datasets/ImageNet/accuracy_checker_annotations/2012/full/imagenet.pickle",
+                "dataset_meta": "/nfs/inn/proj/vdp/vdp_datasets/datasets/ImageNet/accuracy_checker_annotations/2012/full/imagenet.json",
+                "annotation_conversion": {
+                    "converter": "imagenet",
+                    "annotation_file": "/nfs/inn/proj/vdp/vdp_datasets/datasets/ImageNet/original/ILSVRC2012_val.txt",
+                    "labels_file": "/nfs/inn/proj/vdp/vdp_datasets/datasets/ImageNet/original/synset_words.txt",
+                    "has_background": false
+                },
+                "metrics": [
+                    {
+                        "name": "accuracy @ top1",
+                        "type": "accuracy",
+                        "top_k": 1
+                    },
+                    {
+                        "name": "accuracy @ top5",
+                        "type": "accuracy",
+                        "top_k": 5
+                    }
+                ],
+                "preprocessing": [
+                    {
+                        "type": "resize",
+                        "size": 256,
+                        "aspect_ratio_scale": "greater"
+                    },
+                    {
+                        "type": "crop",
+                        "size": 224
+                    }
+                ]
+            }
+        ]
+    },
+    "compression": {
+        "target_device": "CPU",
+        "algorithms": [
+            {
+                "name": "AccuracyAwareQuantization",
+                "params": {
+                    "preset": "performance",
+                    "stat_subset_size": 300,
+                    "metric_subset_ratio": 0.2,
+                    "max_iter_num": 20,
+                    "maximal_drop": 0.01,
+                    "drop_type": "relative",
+                    "metrics": [
+                        {
+                            "name": "accuracy @ top1",
+                            "baseline_value": 0.7517
+                        },
+                        {
+                            "name": "accuracy @ top5",
+                            "baseline_value": 0.922
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
