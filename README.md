@@ -20,7 +20,7 @@ This repository contains the data you need to pass all tests successfully.
 
 ## License
 
-Deep Learning Deployment toolkit is licensed under the [Apache License Version 2.0](LICENSE). By
+Deep Learning Deployment toolkit is licensed under the [Apache License Version 2.0](LICENSES/Apache_2.0_LICENSE). By
 contributing to the project, you agree to the license and copyright terms therein and release your
 contribution under these terms.
 
